@@ -1,21 +1,23 @@
 <?php
-// Check if Render provided the Supabase connection string
 $dbUrl = getenv('DATABASE_URL');
 
 if ($dbUrl) {
-    // Parse the DATABASE_URL connection string from Render
+    // Parse DATABASE_URL connection string safely
     $dbopts = parse_url($dbUrl);
+
+    if ($dbopts === false || !isset($dbopts["host"])) {
+        die("Database configuration error: Unable to parse DATABASE_URL.");
+    }
 
     $host     = $dbopts["host"];
     $port     = $dbopts["port"] ?? 5432;
-    $user     = $dbopts["user"];
-    $password = $dbopts["pass"];
-    $dbname   = ltrim($dbopts["path"], '/');
+    $user     = $dbopts["user"] ?? 'postgres';
+    $password = isset($dbopts["pass"]) ? urldecode($dbopts["pass"]) : '';
+    $dbname   = isset($dbopts["path"]) ? ltrim($dbopts["path"], '/') : 'postgres';
 
-    // DSN for PostgreSQL driver (pgsql)
     $dsn = "pgsql:host={$host};port={$port};dbname={$dbname};";
 } else {
-    // Local fallback for XAMPP / MySQL
+    // Local fallback
     $host     = "localhost";
     $user     = "root";
     $password = "";
@@ -24,7 +26,6 @@ if ($dbUrl) {
     $dsn = "mysql:host={$host};dbname={$dbname}";
 }
 
-// Create connection using PDO
 try {
     $conn = new PDO($dsn, $user, $password, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION

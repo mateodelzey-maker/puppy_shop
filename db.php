@@ -1,15 +1,19 @@
 <?php
+// Enable full error reporting to diagnose 502 crashes
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 $dbUrl = getenv('DATABASE_URL');
 
 if ($dbUrl) {
-    // Parse DATABASE_URL connection string safely
     $dbopts = parse_url($dbUrl);
 
-    if ($dbopts === false || !isset($dbopts["host"])) {
-        die("Database configuration error: Unable to parse DATABASE_URL.");
+    if ($dbopts === false) {
+        die("Error: Unable to parse DATABASE_URL environment variable.");
     }
 
-    $host     = $dbopts["host"];
+    $host     = $dbopts["host"] ?? '';
     $port     = $dbopts["port"] ?? 5432;
     $user     = $dbopts["user"] ?? 'postgres';
     $password = isset($dbopts["pass"]) ? urldecode($dbopts["pass"]) : '';
@@ -17,7 +21,7 @@ if ($dbUrl) {
 
     $dsn = "pgsql:host={$host};port={$port};dbname={$dbname};";
 } else {
-    // Local fallback
+    // Local XAMPP Fallback
     $host     = "localhost";
     $user     = "root";
     $password = "";
@@ -28,9 +32,10 @@ if ($dbUrl) {
 
 try {
     $conn = new PDO($dsn, $user, $password, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_TIMEOUT => 5 // Prevent hanging requests
     ]);
-} catch(PDOException $e) {
-    die("Database connection failed: " . $e->getMessage());
+} catch (PDOException $e) {
+    die("Database Connection Error: " . $e->getMessage());
 }
 ?>

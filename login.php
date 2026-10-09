@@ -9,20 +9,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = trim($_POST['password']);
 
     if (!empty($username) && !empty($password)) {
-        $sql = "SELECT * FROM site_admins WHERE username = :username";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':username', $username);
-        $stmt->execute();
-        $admin = $stmt->fetch(PDO::FETCH_ASSOC);
+        try {
+            $sql = "SELECT * FROM site_admins WHERE username = :username";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':username', $username);
+            $stmt->execute();
+            $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($admin && password_verify($password, $admin['password_hash'])) {
-            // Password is correct! Set session keys.
-            $_SESSION['is_admin'] = true;
-            $_SESSION['admin_user'] = $admin['username'];
-            header("Location: index.php");
-            exit();
-        } else {
-            $error = "Invalid username or password credentials.";
+            if ($admin && password_verify($password, $admin['password_hash'])) {
+                $_SESSION['is_admin'] = true;
+                $_SESSION['admin_user'] = $admin['username'];
+                header("Location: index.php");
+                exit();
+            } else {
+                $error = "Invalid username or password credentials.";
+            }
+        } catch (PDOException $e) {
+            $error = "Database Error: " . $e->getMessage();
         }
     } else {
         $error = "Please fill out all login parameters.";

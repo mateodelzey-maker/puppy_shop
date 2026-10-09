@@ -5,8 +5,8 @@ require_once 'db.php';
 $error = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = trim($_POST['username']);
-    $password = trim($_POST['password']);
+    $username = trim($_POST['username'] ?? '');
+    $password = trim($_POST['password'] ?? '');
 
     if (!empty($username) && !empty($password)) {
         try {
@@ -50,7 +50,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
     <div class="login-box">
         <h2>Admin Portal</h2>
-        <?php if(!empty($error)): ?> <div class="err"><?php echo $error; ?></div> <?php endif; ?>
+        <?php if (!empty($error)): ?>
+            <div class="err"><?php echo htmlspecialchars($error); ?></div>
+        <?php endif; ?>
         <form method="POST">
             <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="password" placeholder="Password" required>

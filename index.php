@@ -94,7 +94,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DreamDog Boutique | Premium Purebred Companions</title>
+    <title>FURRYTAIL CAVADOODLES | Premium Purebred Companions</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
@@ -543,7 +543,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
     <!-- STICKY SITE HEADER -->
     <header class="site-header">
-        <a href="index.php" class="header-logo"><span>🐾</span> DreamDog</a>
+        <a href="index.php" class="header-logo"><span>🐾</span>FURRYTAIL CAVOODLES</a>
         <nav class="header-nav">
             <a href="#about">About Us</a>
             <a href="#services">Services</a>
